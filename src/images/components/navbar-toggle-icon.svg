@@ -1,4 +1,4 @@
-<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<svg width="16" height="16" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
     <style>
 
         .uk-navbar-toggle-icon svg > [class*='line-'] {
@@ -20,8 +20,8 @@
         .uk-navbar-toggle-animate[aria-expanded="true"] svg > .line-4 { transform: translateY(-6px) scaleX(0); }
 
     </style>
-    <rect class="line-1" y="3" width="20" height="2" />
-    <rect class="line-2" y="9" width="20" height="2" />
-    <rect class="line-3" y="9" width="20" height="2" />
-    <rect class="line-4" y="15" width="20" height="2" />
+    <rect class="line-1" y="3" width="20" height="2" rx="1" />
+    <rect class="line-2" y="9" width="20" height="2" rx="1" />
+    <rect class="line-3" y="9" width="20" height="2" rx="1" />
+    <rect class="line-4" y="15" width="20" height="2" rx="1" />
 </svg>

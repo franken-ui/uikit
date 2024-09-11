@@ -10,7 +10,7 @@ export { default as HeightPlaceholder } from './height-placeholder';
 export { default as HeightViewport } from './height-viewport';
 export { default as Icon } from './icon';
 export { default as Img } from './img';
-export { default as Inverse } from './inverse';
+// export { default as Inverse } from './inverse';
 export { default as Leader } from './leader';
 export { default as Margin } from './margin';
 export { default as Modal } from './modal';
