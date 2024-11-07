@@ -3,19 +3,19 @@ export { default as Alert } from './alert';
 export { default as Cover } from './cover';
 export { default as Drop, default as Dropdown } from './drop';
 export { default as Dropnav } from './dropnav';
-export { default as FormCustom } from './form-custom';
+// export { default as FormCustom } from './form-custom';
 export { default as Grid } from './grid';
-export { default as HeightMatch } from './height-match';
-export { default as HeightPlaceholder } from './height-placeholder';
-export { default as HeightViewport } from './height-viewport';
-export { default as Icon } from './icon';
+// export { default as HeightMatch } from './height-match';
+// export { default as HeightPlaceholder } from './height-placeholder';
+// export { default as HeightViewport } from './height-viewport';
+// export { default as Icon } from './icon';
 export { default as Img } from './img';
 // export { default as Inverse } from './inverse';
 export { default as Leader } from './leader';
-export { default as Margin } from './margin';
+// export { default as Margin } from './margin';
 export { default as Modal } from './modal';
 export { default as Nav } from './nav';
-export { default as Navbar } from './navbar';
+// export { default as Navbar } from './navbar';
 export { default as Offcanvas } from './offcanvas';
 export { default as OverflowAuto } from './overflow-auto';
 export { default as Responsive } from './responsive';
@@ -38,8 +38,8 @@ export {
     IconComponent as NavbarParentIcon,
     NavbarToggleIcon,
     IconComponent as OverlayIcon,
-    PaginationNext,
-    PaginationPrevious,
+    PaginationNext as PgnNext,
+    PaginationPrevious as PgnPrevious,
     Search as SearchIcon,
     Slidenav as SlidenavNext,
     Slidenav as SlidenavPrevious,

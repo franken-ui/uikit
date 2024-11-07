@@ -190,7 +190,7 @@ export default {
                 const overflow = this.overflowFlip ? 0 : Math.max(0, height + offset - viewport);
                 const topOffset =
                     getOffset(referenceElement).top -
-                    // offset possible `transform: translateY` animation 'uk-animation-slide-top' while hiding
+                    // offset possible `transform: translateY` animation 'uk-anmt-slide-top' while hiding
                     new DOMMatrix(css(referenceElement, 'transform')).m42;
                 const elHeight = dimensions(this.$el).height;
 
@@ -355,7 +355,7 @@ export default {
                     }
 
                     if (this.animation && below) {
-                        if (hasClass(this.$el, 'uk-animation-leave')) {
+                        if (hasClass(this.$el, 'uk-anmt-leave')) {
                             return;
                         }
                         Animation.out(this.$el, this.animation).then(() => this.hide(), noop);

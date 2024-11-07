@@ -22,8 +22,8 @@ import navParentIcon from '../../images/components/nav-parent-icon.svg';
 import navbarParentIcon from '../../images/components/navbar-parent-icon.svg';
 import navbarToggleIcon from '../../images/components/navbar-toggle-icon.svg';
 import overlayIcon from '../../images/components/overlay-icon.svg';
-import paginationNext from '../../images/components/pagination-next.svg';
-import paginationPrevious from '../../images/components/pagination-previous.svg';
+import pgnNext from '../../images/components/pagination-next.svg';
+import pgnPrevious from '../../images/components/pagination-previous.svg';
 import searchIcon from '../../images/components/search-icon.svg';
 import searchLarge from '../../images/components/search-large.svg';
 import searchMedium from '../../images/components/search-medium.svg';
@@ -49,8 +49,8 @@ const icons = {
     'navbar-parent-icon': navbarParentIcon,
     'navbar-toggle-icon': navbarToggleIcon,
     'overlay-icon': overlayIcon,
-    'pagination-next': paginationNext,
-    'pagination-previous': paginationPrevious,
+    'pgn-next': pgnNext,
+    'pgn-previous': pgnPrevious,
     'search-icon': searchIcon,
     'search-medium': searchMedium,
     'search-large': searchLarge,

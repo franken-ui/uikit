@@ -96,9 +96,7 @@ function install({ modal }) {
                 isString(message) ? message : html(message)
             }</div>
             <div class="uk-modal-footer uk-text-right">
-                <button class="uk-button uk-button-primary uk-modal-close" autofocus>${
-                    i18n.ok
-                }</button>
+                <button class="uk-btn uk-btn-primary uk-modal-close" autofocus>${i18n.ok}</button>
             </div>`,
             options,
         );
@@ -109,10 +107,10 @@ function install({ modal }) {
             ({ i18n }) => `<form>
                 <div class="uk-modal-body">${isString(message) ? message : html(message)}</div>
                 <div class="uk-modal-footer uk-text-right">
-                    <button class="uk-button uk-button-default uk-modal-close" type="button">${
+                    <button class="uk-btn uk-btn-default uk-modal-close mr-2" type="button">${
                         i18n.cancel
                     }</button>
-                    <button class="uk-button uk-button-primary" autofocus>${i18n.ok}</button>
+                    <button class="uk-btn uk-btn-primary" autofocus>${i18n.ok}</button>
                 </div>
             </form>`,
             options,
@@ -124,14 +122,14 @@ function install({ modal }) {
         const promise = openDialog(
             ({ i18n }) => `<form class="uk-form-stacked">
                 <div class="uk-modal-body">
-                    <label>${isString(message) ? message : html(message)}</label>
-                    <input class="uk-input" autofocus>
+                    <label class="uk-form-label">${isString(message) ? message : html(message)}</label>
+                    <input class="uk-input mt-2" autofocus>
                 </div>
                 <div class="uk-modal-footer uk-text-right">
-                    <button class="uk-button uk-button-default uk-modal-close" type="button">${
+                    <button class="uk-btn uk-btn-default uk-modal-close mr-2" type="button">${
                         i18n.cancel
                     }</button>
-                    <button class="uk-button uk-button-primary">${i18n.ok}</button>
+                    <button class="uk-btn uk-btn-primary">${i18n.ok}</button>
                 </div>
             </form>`,
             options,

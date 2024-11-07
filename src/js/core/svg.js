@@ -128,7 +128,7 @@ function applyAnimation(el) {
     const length = getMaxPathLength(el);
 
     if (length) {
-        css(el, '--uk-animation-stroke', length);
+        css(el, '--uk-anmt-stroke', length);
     }
 }
 

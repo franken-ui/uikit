@@ -66,7 +66,7 @@ export const Transition = {
     },
 };
 
-const clsAnimation = 'uk-animation';
+const clsAnimation = 'uk-anmt';
 const animationEnd = 'animationend';
 const animationCanceled = 'animationcanceled';
 

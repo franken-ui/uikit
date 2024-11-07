@@ -122,7 +122,7 @@ export default {
             toggleClass(el, state.cls);
 
             let match;
-            if ((match = state.cls.match(/\buk-animation-[\w-]+/g))) {
+            if ((match = state.cls.match(/\buk-anmt-[\w-]+/g))) {
                 const removeAnimationClasses = () => removeClass(el, match);
                 if (inview) {
                     state.off = once(el, 'animationcancel animationend', removeAnimationClasses, {

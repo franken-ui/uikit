@@ -28,7 +28,7 @@ export default {
 
     data: {
         pos: 'top',
-        animation: ['uk-animation-scale-up'],
+        animation: ['uk-anmt-scale-up'],
         duration: 100,
         cls: 'uk-active',
     },

@@ -683,7 +683,7 @@
         return hasClass(element, clsTransition);
       }
     };
-    const clsAnimation = "uk-animation";
+    const clsAnimation = "uk-anmt";
     const animationEnd = "animationend";
     const animationCanceled = "animationcanceled";
     function animate$2(element, animation, duration = 200, origin, out) {
@@ -1674,98 +1674,6 @@
         wrapInner: wrapInner
     });
 
-    var Class = {
-      connected() {
-        addClass(this.$el, this.$options.id);
-      }
-    };
-
-    const units = ["days", "hours", "minutes", "seconds"];
-    var countdown = {
-      mixins: [Class],
-      props: {
-        date: String,
-        clsWrapper: String,
-        role: String
-      },
-      data: {
-        date: "",
-        clsWrapper: ".uk-countdown-%unit%",
-        role: "timer"
-      },
-      connected() {
-        attr(this.$el, "role", this.role);
-        this.date = toFloat(Date.parse(this.$props.date));
-        this.end = false;
-        this.start();
-      },
-      disconnected() {
-        this.stop();
-      },
-      events: {
-        name: "visibilitychange",
-        el: () => document,
-        handler() {
-          if (document.hidden) {
-            this.stop();
-          } else {
-            this.start();
-          }
-        }
-      },
-      methods: {
-        start() {
-          this.stop();
-          this.update();
-          if (!this.timer) {
-            trigger(this.$el, "countdownstart");
-            this.timer = setInterval(this.update, 1e3);
-          }
-        },
-        stop() {
-          if (this.timer) {
-            clearInterval(this.timer);
-            trigger(this.$el, "countdownstop");
-            this.timer = null;
-          }
-        },
-        update() {
-          const timespan = getTimeSpan(this.date);
-          if (!timespan.total) {
-            this.stop();
-            if (!this.end) {
-              trigger(this.$el, "countdownend");
-              this.end = true;
-            }
-          }
-          for (const unit of units) {
-            const el = $(this.clsWrapper.replace("%unit%", unit), this.$el);
-            if (!el) {
-              continue;
-            }
-            let digits = Math.trunc(timespan[unit]).toString().padStart(2, "0");
-            if (el.textContent !== digits) {
-              digits = digits.split("");
-              if (digits.length !== el.children.length) {
-                html(el, digits.map(() => "<span></span>").join(""));
-              }
-              digits.forEach((digit, i) => el.children[i].textContent = digit);
-            }
-          }
-        }
-      }
-    };
-    function getTimeSpan(date) {
-      const total = Math.max(0, date - Date.now()) / 1e3;
-      return {
-        total,
-        seconds: total % 60,
-        minutes: total / 60 % 60,
-        hours: total / 60 / 60 % 24,
-        days: total / 60 / 60 / 24
-      };
-    }
-
     const strats = {};
     strats.events = strats.watch = strats.observe = strats.created = strats.beforeConnect = strats.connected = strats.beforeDisconnect = strats.disconnected = strats.destroy = concatStrat;
     strats.args = function(parentVal, childVal) {
@@ -2490,6 +2398,12 @@
         css(scrollingElement, { overflowY: "", touchAction: "", paddingRight: "" });
       };
     }
+
+    var Class = {
+      connected() {
+        addClass(this.$el, this.$options.id);
+      }
+    };
 
     var Container = {
       props: {
@@ -4112,7 +4026,7 @@
         pauseOnHover: false,
         velocity: 2,
         Animations: Animations$1,
-        template: `<div class="uk-lightbox uk-overflow-hidden"> <div class="uk-lightbox-items"></div> <div class="uk-lightbox-toolbar uk-position-top uk-text-right uk-transition-slide-top uk-transition-opaque"> <button class="uk-lightbox-toolbar-icon uk-close-large" type="button" uk-close></button> </div> <a class="uk-lightbox-button uk-position-center-left uk-position-medium uk-transition-fade" href uk-slidenav-previous uk-lightbox-item="previous"></a> <a class="uk-lightbox-button uk-position-center-right uk-position-medium uk-transition-fade" href uk-slidenav-next uk-lightbox-item="next"></a> <div class="uk-lightbox-toolbar uk-lightbox-caption uk-position-bottom uk-text-center uk-transition-slide-bottom uk-transition-opaque"></div> </div>`
+        template: `<div class="uk-lightbox uk-overflow-hidden"> <div class="uk-lightbox-items"></div> <div class="uk-lightbox-toolbar uk-position-top uk-text-right uk-transition-slide-top uk-transition-opaque"> <button class="uk-lightbox-toolbar-icon uk-close-large" type="button" uk-close></button> </div> <a class="uk-lightbox-button uk-position-center-left uk-position-sm uk-transition-fade" href uk-slidenav-previous uk-lightbox-item="previous"></a> <a class="uk-lightbox-button uk-position-center-right uk-position-sm uk-transition-fade" href uk-slidenav-next uk-lightbox-item="next"></a> <div class="uk-lightbox-toolbar uk-lightbox-caption uk-position-bottom uk-text-center uk-transition-slide-bottom uk-transition-opaque"></div> </div>`
       }),
       created() {
         const $el = $(this.template);
@@ -5986,7 +5900,7 @@
       mixins: [Container, Togglable, Position],
       data: {
         pos: "top",
-        animation: ["uk-animation-scale-up"],
+        animation: ["uk-anmt-scale-up"],
         duration: 100,
         cls: "uk-active"
       },
@@ -6107,210 +6021,8 @@
       });
     }
 
-    var upload = {
-      mixins: [I18n],
-      i18n: {
-        invalidMime: "Invalid File Type: %s",
-        invalidName: "Invalid File Name: %s",
-        invalidSize: "Invalid File Size: %s Kilobytes Max"
-      },
-      props: {
-        allow: String,
-        clsDragover: String,
-        concurrent: Number,
-        maxSize: Number,
-        method: String,
-        mime: String,
-        multiple: Boolean,
-        name: String,
-        params: Object,
-        type: String,
-        url: String
-      },
-      data: {
-        allow: false,
-        clsDragover: "uk-dragover",
-        concurrent: 1,
-        maxSize: 0,
-        method: "POST",
-        mime: false,
-        multiple: false,
-        name: "files[]",
-        params: {},
-        type: "",
-        url: "",
-        abort: noop,
-        beforeAll: noop,
-        beforeSend: noop,
-        complete: noop,
-        completeAll: noop,
-        error: noop,
-        fail: noop,
-        load: noop,
-        loadEnd: noop,
-        loadStart: noop,
-        progress: noop
-      },
-      events: {
-        change(e) {
-          if (!matches(e.target, 'input[type="file"]')) {
-            return;
-          }
-          e.preventDefault();
-          if (e.target.files) {
-            this.upload(e.target.files);
-          }
-          e.target.value = "";
-        },
-        drop(e) {
-          stop(e);
-          const transfer = e.dataTransfer;
-          if (!(transfer == null ? void 0 : transfer.files)) {
-            return;
-          }
-          removeClass(this.$el, this.clsDragover);
-          this.upload(transfer.files);
-        },
-        dragenter(e) {
-          stop(e);
-        },
-        dragover(e) {
-          stop(e);
-          addClass(this.$el, this.clsDragover);
-        },
-        dragleave(e) {
-          stop(e);
-          removeClass(this.$el, this.clsDragover);
-        }
-      },
-      methods: {
-        async upload(files) {
-          files = toArray(files);
-          if (!files.length) {
-            return;
-          }
-          trigger(this.$el, "upload", [files]);
-          for (const file of files) {
-            if (this.maxSize && this.maxSize * 1e3 < file.size) {
-              this.fail(this.t("invalidSize", this.maxSize));
-              return;
-            }
-            if (this.allow && !match$1(this.allow, file.name)) {
-              this.fail(this.t("invalidName", this.allow));
-              return;
-            }
-            if (this.mime && !match$1(this.mime, file.type)) {
-              this.fail(this.t("invalidMime", this.mime));
-              return;
-            }
-          }
-          if (!this.multiple) {
-            files = files.slice(0, 1);
-          }
-          this.beforeAll(this, files);
-          const chunks = chunk(files, this.concurrent);
-          const upload = async (files2) => {
-            const data = new FormData();
-            files2.forEach((file) => data.append(this.name, file));
-            for (const key in this.params) {
-              data.append(key, this.params[key]);
-            }
-            try {
-              const xhr = await ajax(this.url, {
-                data,
-                method: this.method,
-                responseType: this.type,
-                beforeSend: (env) => {
-                  const { xhr: xhr2 } = env;
-                  on(xhr2.upload, "progress", this.progress);
-                  for (const type of ["loadStart", "load", "loadEnd", "abort"]) {
-                    on(xhr2, type.toLowerCase(), this[type]);
-                  }
-                  return this.beforeSend(env);
-                }
-              });
-              this.complete(xhr);
-              if (chunks.length) {
-                await upload(chunks.shift());
-              } else {
-                this.completeAll(xhr);
-              }
-            } catch (e) {
-              this.error(e);
-            }
-          };
-          await upload(chunks.shift());
-        }
-      }
-    };
-    function match$1(pattern, path) {
-      return path.match(
-        new RegExp(
-          `^${pattern.replace(/\//g, "\\/").replace(/\*\*/g, "(\\/[^\\/]+)*").replace(/\*/g, "[^\\/]+").replace(/((?!\\))\?/g, "$1.")}$`,
-          "i"
-        )
-      );
-    }
-    function chunk(files, size) {
-      const chunks = [];
-      for (let i = 0; i < files.length; i += size) {
-        chunks.push(files.slice(i, i + size));
-      }
-      return chunks;
-    }
-    function stop(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    async function ajax(url, options) {
-      const env = {
-        data: null,
-        method: "GET",
-        headers: {},
-        xhr: new XMLHttpRequest(),
-        beforeSend: noop,
-        responseType: "",
-        ...options
-      };
-      await env.beforeSend(env);
-      return send(url, env);
-    }
-    function send(url, env) {
-      return new Promise((resolve, reject) => {
-        const { xhr } = env;
-        for (const prop in env) {
-          if (prop in xhr) {
-            try {
-              xhr[prop] = env[prop];
-            } catch (e) {
-            }
-          }
-        }
-        xhr.open(env.method.toUpperCase(), url);
-        for (const header in env.headers) {
-          xhr.setRequestHeader(header, env.headers[header]);
-        }
-        on(xhr, "load", () => {
-          if (xhr.status === 0 || xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
-            resolve(xhr);
-          } else {
-            reject(
-              assign(Error(xhr.statusText), {
-                xhr,
-                status: xhr.status
-              })
-            );
-          }
-        });
-        on(xhr, "error", () => reject(assign(Error("Network Error"), { xhr })));
-        on(xhr, "timeout", () => reject(assign(Error("Network Timeout"), { xhr })));
-        xhr.send(env.data);
-      });
-    }
-
     var components$1 = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        Countdown: countdown,
         Filter: filter,
         Lightbox: lightbox,
         LightboxPanel: LightboxPanel,
@@ -6321,8 +6033,7 @@
         Slideshow: slideshow,
         SlideshowParallax: sliderParallax,
         Sortable: sortable,
-        Tooltip: tooltip,
-        Upload: upload
+        Tooltip: tooltip
     });
 
     function boot(App) {
@@ -6788,7 +6499,7 @@
         clsDrop: false,
         animateOut: false,
         bgScroll: true,
-        animation: ["uk-animation-fade"],
+        animation: ["uk-anmt-fade"],
         cls: "uk-open",
         container: false,
         closeOnScroll: false
@@ -7117,7 +6828,7 @@
       });
     }
 
-    var Dropnav = {
+    var dropnav = {
       mixins: [Class, Container],
       props: {
         align: String,
@@ -7415,55 +7126,6 @@
       }
     }
 
-    var formCustom = {
-      mixins: [Class],
-      args: "target",
-      props: {
-        target: Boolean
-      },
-      data: {
-        target: false
-      },
-      computed: {
-        input: (_, $el) => $(selInput, $el),
-        state() {
-          return this.input.nextElementSibling;
-        },
-        target({ target }, $el) {
-          return target && (target === true && parent(this.input) === $el && this.input.nextElementSibling || $(target, $el));
-        }
-      },
-      update() {
-        var _a;
-        const { target, input } = this;
-        if (!target) {
-          return;
-        }
-        let option;
-        const prop = isInput(target) ? "value" : "textContent";
-        const prev = target[prop];
-        const value = ((_a = input.files) == null ? void 0 : _a[0]) ? input.files[0].name : matches(input, "select") && (option = $$("option", input).filter((el) => el.selected)[0]) ? option.textContent : input.value;
-        if (prev !== value) {
-          target[prop] = value;
-        }
-      },
-      events: [
-        {
-          name: "change",
-          handler() {
-            this.$emit();
-          }
-        },
-        {
-          name: "reset",
-          el: ({ $el }) => $el.closest("form"),
-          handler() {
-            this.$emit();
-          }
-        }
-      ]
-    };
-
     var grid = {
       extends: Margin,
       mixins: [Class],
@@ -7618,542 +7280,6 @@
         array[index] = [];
       }
       array[index].push(value);
-    }
-
-    var heightMatch = {
-      args: "target",
-      props: {
-        target: String,
-        row: Boolean
-      },
-      data: {
-        target: "> *",
-        row: true
-      },
-      computed: {
-        elements: ({ target }, $el) => $$(target, $el)
-      },
-      observe: resize({
-        target: ({ $el, elements }) => elements.reduce((elements2, el) => elements2.concat(el, ...el.children), [$el])
-      }),
-      events: {
-        // Hidden elements may change height when fonts load
-        name: "loadingdone",
-        el: () => document.fonts,
-        handler() {
-          this.$emit("resize");
-        }
-      },
-      update: {
-        read() {
-          return {
-            rows: (this.row ? getRows(this.elements) : [this.elements]).map(match)
-          };
-        },
-        write({ rows }) {
-          for (const { heights, elements } of rows) {
-            elements.forEach((el, i) => css(el, "minHeight", heights[i]));
-          }
-        },
-        events: ["resize"]
-      }
-    };
-    function match(elements) {
-      if (elements.length < 2) {
-        return { heights: [""], elements };
-      }
-      let heights = elements.map(getHeight);
-      const max = Math.max(...heights);
-      return {
-        heights: elements.map((el, i) => heights[i].toFixed(2) === max.toFixed(2) ? "" : max),
-        elements
-      };
-    }
-    function getHeight(element) {
-      const style = pick(element.style, ["display", "minHeight"]);
-      if (!isVisible(element)) {
-        css(element, "display", "block", "important");
-      }
-      css(element, "minHeight", "");
-      const height = dimensions$1(element).height - boxModelAdjust(element, "height", "content-box");
-      css(element, style);
-      return height;
-    }
-
-    var heightPlaceholder = {
-      args: "target",
-      props: {
-        target: String
-      },
-      data: {
-        target: ""
-      },
-      computed: {
-        target: {
-          get: ({ target }, $el) => query(target, $el),
-          observe: ({ target }) => target
-        }
-      },
-      observe: resize({ target: ({ target }) => target }),
-      update: {
-        read() {
-          return this.target ? { height: this.target.offsetHeight } : false;
-        },
-        write({ height }) {
-          css(this.$el, { minHeight: height });
-        },
-        events: ["resize"]
-      }
-    };
-
-    var heightViewport = {
-      props: {
-        expand: Boolean,
-        offsetTop: Boolean,
-        offsetBottom: Boolean,
-        minHeight: Number
-      },
-      data: {
-        expand: false,
-        offsetTop: false,
-        offsetBottom: false,
-        minHeight: 0
-      },
-      // check for offsetTop change
-      observe: [
-        viewport({ filter: ({ expand }) => expand }),
-        resize({ target: ({ $el }) => scrollParents($el) })
-      ],
-      update: {
-        read() {
-          if (!isVisible(this.$el)) {
-            return false;
-          }
-          let minHeight = "";
-          const box = boxModelAdjust(this.$el, "height", "content-box");
-          const { body, scrollingElement } = document;
-          const scrollElement = scrollParent(this.$el);
-          const { height: viewportHeight } = offsetViewport(
-            scrollElement === body ? scrollingElement : scrollElement
-          );
-          const isScrollingElement = scrollingElement === scrollElement || body === scrollElement;
-          minHeight = `calc(${isScrollingElement ? "100vh" : `${viewportHeight}px`}`;
-          if (this.expand) {
-            const diff = dimensions$1(scrollElement).height - dimensions$1(this.$el).height;
-            minHeight += ` - ${diff}px`;
-          } else {
-            if (this.offsetTop) {
-              if (isScrollingElement) {
-                const offsetTopEl = this.offsetTop === true ? this.$el : query(this.offsetTop, this.$el);
-                const { top } = offset(offsetTopEl);
-                minHeight += top > 0 && top < viewportHeight / 2 ? ` - ${top}px` : "";
-              } else {
-                minHeight += ` - ${boxModelAdjust(scrollElement, "height", css(scrollElement, "boxSizing"))}px`;
-              }
-            }
-            if (this.offsetBottom === true) {
-              minHeight += ` - ${dimensions$1(this.$el.nextElementSibling).height}px`;
-            } else if (isNumeric(this.offsetBottom)) {
-              minHeight += ` - ${this.offsetBottom}vh`;
-            } else if (this.offsetBottom && endsWith(this.offsetBottom, "px")) {
-              minHeight += ` - ${toFloat(this.offsetBottom)}px`;
-            } else if (isString(this.offsetBottom)) {
-              minHeight += ` - ${dimensions$1(query(this.offsetBottom, this.$el)).height}px`;
-            }
-          }
-          minHeight += `${box ? ` - ${box}px` : ""})`;
-          return { minHeight };
-        },
-        write({ minHeight }) {
-          css(this.$el, "minHeight", `max(${this.minHeight || 0}px, ${minHeight})`);
-        },
-        events: ["resize"]
-      }
-    };
-
-    var closeIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-x\" viewBox=\"0 0 24 24\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>";
-
-    var closeLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-x\" viewBox=\"0 0 24 24\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>";
-
-    var dropParentIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
-
-    var marker = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-plus\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>";
-
-    var navParentIconLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
-
-    var navParentIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
-
-    var navbarParentIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
-
-    var navbarToggleIcon = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\"><style>.uk-navbar-toggle-icon svg&gt;[class*=&quot;line-&quot;]{transition:0.2s ease-in-out;transition-property:transform, opacity;transform-origin:center;opacity:1}.uk-navbar-toggle-icon svg&gt;.line-3{opacity:0}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-3{opacity:1}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-2{transform:rotate(45deg)}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-3{transform:rotate(-45deg)}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-1,.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-4{opacity:0}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-1{transform:translateY(6px) scaleX(0)}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-4{transform:translateY(-6px) scaleX(0)}</style><rect width=\"20\" height=\"2\" y=\"3\" class=\"line-1\" rx=\"1\"/><rect width=\"20\" height=\"2\" y=\"9\" class=\"line-2\" rx=\"1\"/><rect width=\"20\" height=\"2\" y=\"9\" class=\"line-3\" rx=\"1\"/><rect width=\"20\" height=\"2\" y=\"15\" class=\"line-4\" rx=\"1\"/></svg>";
-
-    var overlayIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-plus\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>";
-
-    var paginationNext = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-right\" viewBox=\"0 0 24 24\"><path d=\"m9 18 6-6-6-6\"/></svg>";
-
-    var paginationPrevious = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-left\" viewBox=\"0 0 24 24\"><path d=\"m15 18-6-6 6-6\"/></svg>";
-
-    var searchIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-search\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>";
-
-    var searchLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-search\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>";
-
-    var searchMedium = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-search\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>";
-
-    var slidenavNextLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-right\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg>";
-
-    var slidenavNext = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-right\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg>";
-
-    var slidenavPreviousLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-left\" viewBox=\"0 0 24 24\"><path d=\"m12 19-7-7 7-7\"/><path d=\"M19 12H5\"/></svg>";
-
-    var slidenavPrevious = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-left\" viewBox=\"0 0 24 24\"><path d=\"m12 19-7-7 7-7\"/><path d=\"M19 12H5\"/></svg>";
-
-    var spinner = "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\"><circle fill=\"none\" stroke=\"#000\" cx=\"15\" cy=\"15\" r=\"14\"/></svg>";
-
-    var totop = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-circle-chevron-up\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m8 14 4-4 4 4\"/></svg>";
-
-    var Svg = {
-      args: "src",
-      props: {
-        width: Number,
-        height: Number,
-        ratio: Number
-      },
-      data: {
-        ratio: 1
-      },
-      connected() {
-        this.svg = this.getSvg().then((el) => {
-          if (!this._connected) {
-            return;
-          }
-          const svg = insertSVG(el, this.$el);
-          if (this.svgEl && svg !== this.svgEl) {
-            remove$1(this.svgEl);
-          }
-          applyWidthAndHeight.call(this, svg, el);
-          return this.svgEl = svg;
-        }, noop);
-      },
-      disconnected() {
-        this.svg.then((svg) => {
-          if (this._connected) {
-            return;
-          }
-          if (isVoidElement(this.$el)) {
-            this.$el.hidden = false;
-          }
-          remove$1(svg);
-          this.svgEl = null;
-        });
-        this.svg = null;
-      },
-      methods: {
-        async getSvg() {
-        }
-      }
-    };
-    function insertSVG(el, root) {
-      if (isVoidElement(root) || isTag(root, "canvas")) {
-        root.hidden = true;
-        const next = root.nextElementSibling;
-        return equals(el, next) ? next : after(root, el);
-      }
-      const last = root.lastElementChild;
-      return equals(el, last) ? last : append(root, el);
-    }
-    function equals(el, other) {
-      return isTag(el, "svg") && isTag(other, "svg") && el.innerHTML === other.innerHTML;
-    }
-    function applyWidthAndHeight(el, ref) {
-      const props = ["width", "height"];
-      let dimensions = props.map((prop) => this[prop]);
-      if (!dimensions.some((val) => val)) {
-        dimensions = props.map((prop) => attr(ref, prop));
-      }
-      const viewBox = attr(ref, "viewBox");
-      if (viewBox && !dimensions.some((val) => val)) {
-        dimensions = viewBox.split(" ").slice(2);
-      }
-      dimensions.forEach((val, i) => attr(el, props[i], toFloat(val) * this.ratio || null));
-    }
-
-    var svg = {
-      mixins: [Svg],
-      args: "src",
-      props: {
-        src: String,
-        icon: String,
-        attributes: "list",
-        strokeAnimation: Boolean
-      },
-      data: {
-        strokeAnimation: false
-      },
-      observe: [
-        mutation({
-          async handler() {
-            const svg = await this.svg;
-            if (svg) {
-              applyAttributes.call(this, svg);
-            }
-          },
-          options: {
-            attributes: true,
-            attributeFilter: ["id", "class", "style"]
-          }
-        })
-      ],
-      async connected() {
-        if (includes(this.src, "#")) {
-          [this.src, this.icon] = this.src.split("#");
-        }
-        const svg = await this.svg;
-        if (svg) {
-          applyAttributes.call(this, svg);
-          if (this.strokeAnimation) {
-            applyAnimation(svg);
-          }
-        }
-      },
-      methods: {
-        async getSvg() {
-          if (isTag(this.$el, "img") && !this.$el.complete && this.$el.loading === "lazy") {
-            await new Promise((resolve) => once(this.$el, "load", resolve));
-          }
-          return parseSVG(await loadSVG(this.src), this.icon) || Promise.reject("SVG not found.");
-        }
-      }
-    };
-    function applyAttributes(el) {
-      const { $el } = this;
-      addClass(el, attr($el, "class"), "uk-svg");
-      for (let i = 0; i < $el.style.length; i++) {
-        const prop = $el.style[i];
-        css(el, prop, css($el, prop));
-      }
-      for (const attribute in this.attributes) {
-        const [prop, value] = this.attributes[attribute].split(":", 2);
-        attr(el, prop, value);
-      }
-      if (!this.$el.id) {
-        removeAttr(el, "id");
-      }
-    }
-    const loadSVG = memoize(async (src) => {
-      if (src) {
-        if (startsWith(src, "data:")) {
-          return decodeURIComponent(src.split(",")[1]);
-        } else {
-          return (await fetch(src)).text();
-        }
-      } else {
-        return Promise.reject();
-      }
-    });
-    function parseSVG(svg, icon) {
-      if (icon && includes(svg, "<symbol")) {
-        svg = parseSymbols(svg)[icon] || svg;
-      }
-      return stringToSvg(svg);
-    }
-    const symbolRe = /<symbol([^]*?id=(['"])(.+?)\2[^]*?<\/)symbol>/g;
-    const parseSymbols = memoize(function(svg) {
-      const symbols = {};
-      symbolRe.lastIndex = 0;
-      let match;
-      while (match = symbolRe.exec(svg)) {
-        symbols[match[3]] = `<svg ${match[1]}svg>`;
-      }
-      return symbols;
-    });
-    function applyAnimation(el) {
-      const length = getMaxPathLength(el);
-      if (length) {
-        css(el, "--uk-animation-stroke", length);
-      }
-    }
-    function stringToSvg(string) {
-      const container = document.createElement("template");
-      container.innerHTML = string;
-      return container.content.firstElementChild;
-    }
-
-    const icons = {
-      spinner,
-      totop,
-      marker,
-      "close-icon": closeIcon,
-      "close-large": closeLarge,
-      "drop-parent-icon": dropParentIcon,
-      "nav-parent-icon": navParentIcon,
-      "nav-parent-icon-large": navParentIconLarge,
-      "navbar-parent-icon": navbarParentIcon,
-      "navbar-toggle-icon": navbarToggleIcon,
-      "overlay-icon": overlayIcon,
-      "pagination-next": paginationNext,
-      "pagination-previous": paginationPrevious,
-      "search-icon": searchIcon,
-      "search-medium": searchMedium,
-      "search-large": searchLarge,
-      "search-toggle-icon": searchIcon,
-      "slidenav-next": slidenavNext,
-      "slidenav-next-large": slidenavNextLarge,
-      "slidenav-previous": slidenavPrevious,
-      "slidenav-previous-large": slidenavPreviousLarge
-    };
-    const Icon = {
-      install: install$1,
-      mixins: [Svg],
-      args: "icon",
-      props: { icon: String },
-      isIcon: true,
-      beforeConnect() {
-        addClass(this.$el, "uk-icon");
-      },
-      methods: {
-        async getSvg() {
-          const icon = getIcon(this.icon);
-          if (!icon) {
-            throw "Icon not found.";
-          }
-          return icon;
-        }
-      }
-    };
-    const IconComponent = {
-      args: false,
-      extends: Icon,
-      data: (vm) => ({
-        icon: hyphenate(vm.constructor.options.name)
-      }),
-      beforeConnect() {
-        addClass(this.$el, this.$options.id);
-      }
-    };
-    const NavParentIcon = {
-      extends: IconComponent,
-      beforeConnect() {
-        const icon = this.$props.icon;
-        this.icon = this.$el.closest(".uk-nav-primary") ? `${icon}-large` : icon;
-      }
-    };
-    const Search = {
-      extends: IconComponent,
-      mixins: [I18n],
-      i18n: { toggle: "Open Search", submit: "Submit Search" },
-      beforeConnect() {
-        const isToggle = hasClass(this.$el, "uk-search-toggle") || hasClass(this.$el, "uk-navbar-toggle");
-        this.icon = isToggle ? "search-toggle-icon" : hasClass(this.$el, "uk-search-icon") && this.$el.closest(".uk-search-large") ? "search-large" : this.$el.closest(".uk-search-medium") ? "search-medium" : this.$props.icon;
-        if (hasAttr(this.$el, "aria-label")) {
-          return;
-        }
-        if (isToggle) {
-          const label = this.t("toggle");
-          attr(this.$el, "aria-label", label);
-        } else {
-          const button = this.$el.closest("a,button");
-          if (button) {
-            const label = this.t("submit");
-            attr(button, "aria-label", label);
-          }
-        }
-      }
-    };
-    const Spinner = {
-      extends: IconComponent,
-      beforeConnect() {
-        attr(this.$el, "role", "status");
-      },
-      methods: {
-        async getSvg() {
-          const icon = await Icon.methods.getSvg.call(this);
-          if (this.ratio !== 1) {
-            css($("circle", icon), "strokeWidth", 1 / this.ratio);
-          }
-          return icon;
-        }
-      }
-    };
-    const ButtonComponent = {
-      extends: IconComponent,
-      mixins: [I18n],
-      beforeConnect() {
-        const button = this.$el.closest("a,button");
-        attr(button, "role", this.role !== null && isTag(button, "a") ? "button" : this.role);
-        const label = this.t("label");
-        if (label && !hasAttr(button, "aria-label")) {
-          attr(button, "aria-label", label);
-        }
-      }
-    };
-    const Slidenav = {
-      extends: ButtonComponent,
-      beforeConnect() {
-        addClass(this.$el, "uk-slidenav");
-        const icon = this.$props.icon;
-        this.icon = hasClass(this.$el, "uk-slidenav-large") ? `${icon}-large` : icon;
-      }
-    };
-    const NavbarToggleIcon = {
-      extends: ButtonComponent,
-      i18n: { label: "Open menu" }
-    };
-    const Close = {
-      extends: ButtonComponent,
-      i18n: { label: "Close" },
-      beforeConnect() {
-        this.icon = `close-${hasClass(this.$el, "uk-close-large") ? "large" : "icon"}`;
-      }
-    };
-    const Marker = {
-      extends: ButtonComponent,
-      i18n: { label: "Open" }
-    };
-    const Totop = {
-      extends: ButtonComponent,
-      i18n: { label: "Back to top" }
-    };
-    const PaginationNext = {
-      extends: ButtonComponent,
-      i18n: { label: "Next page" },
-      data: { role: null }
-    };
-    const PaginationPrevious = {
-      extends: ButtonComponent,
-      i18n: { label: "Previous page" },
-      data: { role: null }
-    };
-    const parsed = {};
-    function install$1(UIkit) {
-      UIkit.icon.add = (name, svg) => {
-        const added = isString(name) ? { [name]: svg } : name;
-        each(added, (svg2, name2) => {
-          icons[name2] = svg2;
-          delete parsed[name2];
-        });
-        if (UIkit._initialized) {
-          apply(
-            document.body,
-            (el) => each(UIkit.getComponents(el), (cmp) => {
-              cmp.$options.isIcon && cmp.icon in added && cmp.$reset();
-            })
-          );
-        }
-      };
-    }
-    const aliases = { twitter: "x" };
-    function getIcon(icon) {
-      icon = aliases[icon] || icon;
-      if (!icons[icon]) {
-        return null;
-      }
-      if (!parsed[icon]) {
-        parsed[icon] = stringToSvg(icons[applyRtl(icon)] || icons[icon]);
-      }
-      return parsed[icon].cloneNode(true);
-    }
-    function applyRtl(icon) {
-      return isRtl ? swap(swap(icon, "left", "right"), "previous", "next") : icon;
     }
 
     var img = {
@@ -8312,7 +7438,7 @@
     };
 
     var modal = {
-      install,
+      install: install$1,
       mixins: [Modal],
       data: {
         clsPage: "uk-modal-page",
@@ -8351,7 +7477,7 @@
         }
       ]
     };
-    function install({ modal }) {
+    function install$1({ modal }) {
       modal.dialog = function(content, options) {
         const dialog = modal($(`<div><div class="uk-modal-dialog">${content}</div></div>`), {
           stack: true,
@@ -8372,20 +7498,20 @@
       };
       modal.alert = function(message, options) {
         return openDialog(
-          ({ i18n }) => `<div class="uk-modal-body">${isString(message) ? message : html(message)}</div> <div class="uk-modal-footer uk-text-right"> <button class="uk-button uk-button-primary uk-modal-close" autofocus>${i18n.ok}</button> </div>`,
+          ({ i18n }) => `<div class="uk-modal-body">${isString(message) ? message : html(message)}</div> <div class="uk-modal-footer uk-text-right"> <button class="uk-btn uk-btn-primary uk-modal-close" autofocus>${i18n.ok}</button> </div>`,
           options
         );
       };
       modal.confirm = function(message, options) {
         return openDialog(
-          ({ i18n }) => `<form> <div class="uk-modal-body">${isString(message) ? message : html(message)}</div> <div class="uk-modal-footer uk-text-right"> <button class="uk-button uk-button-default uk-modal-close" type="button">${i18n.cancel}</button> <button class="uk-button uk-button-primary" autofocus>${i18n.ok}</button> </div> </form>`,
+          ({ i18n }) => `<form> <div class="uk-modal-body">${isString(message) ? message : html(message)}</div> <div class="uk-modal-footer uk-text-right"> <button class="uk-btn uk-btn-default uk-modal-close mr-2" type="button">${i18n.cancel}</button> <button class="uk-btn uk-btn-primary" autofocus>${i18n.ok}</button> </div> </form>`,
           options,
           () => Promise.reject()
         );
       };
       modal.prompt = function(message, value, options) {
         const promise = openDialog(
-          ({ i18n }) => `<form class="uk-form-stacked"> <div class="uk-modal-body"> <label>${isString(message) ? message : html(message)}</label> <input class="uk-input" autofocus> </div> <div class="uk-modal-footer uk-text-right"> <button class="uk-button uk-button-default uk-modal-close" type="button">${i18n.cancel}</button> <button class="uk-button uk-button-primary">${i18n.ok}</button> </div> </form>`,
+          ({ i18n }) => `<form class="uk-form-stacked"> <div class="uk-modal-body"> <label class="uk-form-label">${isString(message) ? message : html(message)}</label> <input class="uk-input mt-2" autofocus> </div> <div class="uk-modal-footer uk-text-right"> <button class="uk-btn uk-btn-default uk-modal-close mr-2" type="button">${i18n.cancel}</button> <button class="uk-btn uk-btn-primary">${i18n.ok}</button> </div> </form>`,
           options,
           () => null,
           () => input.value
@@ -8431,77 +7557,6 @@
         content: "> ul"
       }
     };
-
-    const clsNavbarTransparent = "uk-navbar-transparent";
-    var navbar = {
-      extends: Dropnav,
-      props: {
-        dropbarTransparentMode: Boolean
-      },
-      data: {
-        clsDrop: "uk-navbar-dropdown",
-        selNavItem: ".uk-navbar-nav > li > a,a.uk-navbar-item,button.uk-navbar-item,.uk-navbar-item a,.uk-navbar-item button,.uk-navbar-toggle",
-        // Simplify with :where() selector once browser target is Safari 14+
-        dropbarTransparentMode: false
-      },
-      computed: {
-        navbarContainer: (_, $el) => $el.closest(".uk-navbar-container")
-      },
-      watch: {
-        items() {
-          const justify = hasClass(this.$el, "uk-navbar-justify");
-          const containers = $$(".uk-navbar-nav, .uk-navbar-left, .uk-navbar-right", this.$el);
-          for (const container of containers) {
-            const items = justify ? $$(".uk-navbar-nav > li > a, .uk-navbar-item, .uk-navbar-toggle", container).length : "";
-            css(container, "flexGrow", items);
-          }
-        }
-      },
-      events: [
-        {
-          name: "show",
-          el: ({ dropContainer }) => dropContainer,
-          handler({ target }) {
-            if (this.getTransparentMode(target) === "remove" && hasClass(this.navbarContainer, clsNavbarTransparent)) {
-              removeClass(this.navbarContainer, clsNavbarTransparent);
-              this._transparent = true;
-            }
-          }
-        },
-        {
-          name: "hide",
-          el: ({ dropContainer }) => dropContainer,
-          async handler() {
-            await awaitMacroTask();
-            if (!this.getActive() && this._transparent) {
-              addClass(this.navbarContainer, clsNavbarTransparent);
-              this._transparent = null;
-            }
-          }
-        }
-      ],
-      methods: {
-        getTransparentMode(el) {
-          if (!this.navbarContainer) {
-            return;
-          }
-          if (this.dropbar && this.isDropbarDrop(el)) {
-            return this.dropbarTransparentMode;
-          }
-          const drop = this.getDropdown(el);
-          if (drop && hasClass(el, "uk-dropbar")) {
-            return drop.inset ? "behind" : "remove";
-          }
-        },
-        getDropbarOffset(offsetTop) {
-          const { top, height } = offset(this.navbarContainer);
-          return top + (this.dropbarTransparentMode === "behind" ? 0 : height + offsetTop);
-        }
-      }
-    };
-    function awaitMacroTask() {
-      return new Promise((resolve) => setTimeout(resolve));
-    }
 
     var offcanvas = {
       mixins: [Modal],
@@ -8813,7 +7868,7 @@
           toggleClass(el, clsInView, inview);
           toggleClass(el, state.cls);
           let match;
-          if (match = state.cls.match(/\buk-animation-[\w-]+/g)) {
+          if (match = state.cls.match(/\buk-anmt-[\w-]+/g)) {
             const removeAnimationClasses = () => removeClass(el, match);
             if (inview) {
               state.off = once(el, "animationcancel animationend", removeAnimationClasses, {
@@ -9024,7 +8079,7 @@
               offset$1 += dynamicViewport - height$1;
             }
             const overflow = this.overflowFlip ? 0 : Math.max(0, height$1 + offset$1 - viewport2);
-            const topOffset = offset(referenceElement).top - // offset possible `transform: translateY` animation 'uk-animation-slide-top' while hiding
+            const topOffset = offset(referenceElement).top - // offset possible `transform: translateY` animation 'uk-anmt-slide-top' while hiding
             new DOMMatrix(css(referenceElement, "transform")).m42;
             const elHeight = dimensions$1(this.$el).height;
             const start = (this.start === false ? topOffset : parseProp(this.start, this.$el, topOffset)) - offset$1;
@@ -9133,7 +8188,7 @@
                 return;
               }
               if (this.animation && below) {
-                if (hasClass(this.$el, "uk-animation-leave")) {
+                if (hasClass(this.$el, "uk-anmt-leave")) {
                   return;
                 }
                 Animation.out(this.$el, this.animation).then(() => this.hide(), noop);
@@ -9254,6 +8309,173 @@
           return element;
         }
       }
+    }
+
+    var Svg = {
+      args: "src",
+      props: {
+        width: Number,
+        height: Number,
+        ratio: Number
+      },
+      data: {
+        ratio: 1
+      },
+      connected() {
+        this.svg = this.getSvg().then((el) => {
+          if (!this._connected) {
+            return;
+          }
+          const svg = insertSVG(el, this.$el);
+          if (this.svgEl && svg !== this.svgEl) {
+            remove$1(this.svgEl);
+          }
+          applyWidthAndHeight.call(this, svg, el);
+          return this.svgEl = svg;
+        }, noop);
+      },
+      disconnected() {
+        this.svg.then((svg) => {
+          if (this._connected) {
+            return;
+          }
+          if (isVoidElement(this.$el)) {
+            this.$el.hidden = false;
+          }
+          remove$1(svg);
+          this.svgEl = null;
+        });
+        this.svg = null;
+      },
+      methods: {
+        async getSvg() {
+        }
+      }
+    };
+    function insertSVG(el, root) {
+      if (isVoidElement(root) || isTag(root, "canvas")) {
+        root.hidden = true;
+        const next = root.nextElementSibling;
+        return equals(el, next) ? next : after(root, el);
+      }
+      const last = root.lastElementChild;
+      return equals(el, last) ? last : append(root, el);
+    }
+    function equals(el, other) {
+      return isTag(el, "svg") && isTag(other, "svg") && el.innerHTML === other.innerHTML;
+    }
+    function applyWidthAndHeight(el, ref) {
+      const props = ["width", "height"];
+      let dimensions = props.map((prop) => this[prop]);
+      if (!dimensions.some((val) => val)) {
+        dimensions = props.map((prop) => attr(ref, prop));
+      }
+      const viewBox = attr(ref, "viewBox");
+      if (viewBox && !dimensions.some((val) => val)) {
+        dimensions = viewBox.split(" ").slice(2);
+      }
+      dimensions.forEach((val, i) => attr(el, props[i], toFloat(val) * this.ratio || null));
+    }
+
+    var svg = {
+      mixins: [Svg],
+      args: "src",
+      props: {
+        src: String,
+        icon: String,
+        attributes: "list",
+        strokeAnimation: Boolean
+      },
+      data: {
+        strokeAnimation: false
+      },
+      observe: [
+        mutation({
+          async handler() {
+            const svg = await this.svg;
+            if (svg) {
+              applyAttributes.call(this, svg);
+            }
+          },
+          options: {
+            attributes: true,
+            attributeFilter: ["id", "class", "style"]
+          }
+        })
+      ],
+      async connected() {
+        if (includes(this.src, "#")) {
+          [this.src, this.icon] = this.src.split("#");
+        }
+        const svg = await this.svg;
+        if (svg) {
+          applyAttributes.call(this, svg);
+          if (this.strokeAnimation) {
+            applyAnimation(svg);
+          }
+        }
+      },
+      methods: {
+        async getSvg() {
+          if (isTag(this.$el, "img") && !this.$el.complete && this.$el.loading === "lazy") {
+            await new Promise((resolve) => once(this.$el, "load", resolve));
+          }
+          return parseSVG(await loadSVG(this.src), this.icon) || Promise.reject("SVG not found.");
+        }
+      }
+    };
+    function applyAttributes(el) {
+      const { $el } = this;
+      addClass(el, attr($el, "class"), "uk-svg");
+      for (let i = 0; i < $el.style.length; i++) {
+        const prop = $el.style[i];
+        css(el, prop, css($el, prop));
+      }
+      for (const attribute in this.attributes) {
+        const [prop, value] = this.attributes[attribute].split(":", 2);
+        attr(el, prop, value);
+      }
+      if (!this.$el.id) {
+        removeAttr(el, "id");
+      }
+    }
+    const loadSVG = memoize(async (src) => {
+      if (src) {
+        if (startsWith(src, "data:")) {
+          return decodeURIComponent(src.split(",")[1]);
+        } else {
+          return (await fetch(src)).text();
+        }
+      } else {
+        return Promise.reject();
+      }
+    });
+    function parseSVG(svg, icon) {
+      if (icon && includes(svg, "<symbol")) {
+        svg = parseSymbols(svg)[icon] || svg;
+      }
+      return stringToSvg(svg);
+    }
+    const symbolRe = /<symbol([^]*?id=(['"])(.+?)\2[^]*?<\/)symbol>/g;
+    const parseSymbols = memoize(function(svg) {
+      const symbols = {};
+      symbolRe.lastIndex = 0;
+      let match;
+      while (match = symbolRe.exec(svg)) {
+        symbols[match[3]] = `<svg ${match[1]}svg>`;
+      }
+      return symbols;
+    });
+    function applyAnimation(el) {
+      const length = getMaxPathLength(el);
+      if (length) {
+        css(el, "--uk-anmt-stroke", length);
+      }
+    }
+    function stringToSvg(string) {
+      const container = document.createElement("template");
+      container.innerHTML = string;
+      return container.content.firstElementChild;
     }
 
     const selDisabled = ".uk-disabled *, .uk-disabled, [disabled]";
@@ -9590,6 +8812,224 @@
       }
     };
 
+    var closeIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-x\" viewBox=\"0 0 24 24\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>";
+
+    var closeLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-x\" viewBox=\"0 0 24 24\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>";
+
+    var dropParentIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
+
+    var marker = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-plus\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>";
+
+    var navParentIconLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
+
+    var navParentIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
+
+    var navbarParentIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-down\" viewBox=\"0 0 24 24\"><path d=\"m6 9 6 6 6-6\"/></svg>";
+
+    var navbarToggleIcon = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\"><style>.uk-navbar-toggle-icon svg&gt;[class*=&quot;line-&quot;]{transition:0.2s ease-in-out;transition-property:transform, opacity;transform-origin:center;opacity:1}.uk-navbar-toggle-icon svg&gt;.line-3{opacity:0}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-3{opacity:1}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-2{transform:rotate(45deg)}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-3{transform:rotate(-45deg)}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-1,.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-4{opacity:0}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-1{transform:translateY(6px) scaleX(0)}.uk-navbar-toggle-animate[aria-expanded=&quot;true&quot;] svg&gt;.line-4{transform:translateY(-6px) scaleX(0)}</style><rect width=\"20\" height=\"2\" y=\"3\" class=\"line-1\" rx=\"1\"/><rect width=\"20\" height=\"2\" y=\"9\" class=\"line-2\" rx=\"1\"/><rect width=\"20\" height=\"2\" y=\"9\" class=\"line-3\" rx=\"1\"/><rect width=\"20\" height=\"2\" y=\"15\" class=\"line-4\" rx=\"1\"/></svg>";
+
+    var overlayIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-plus\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>";
+
+    var pgnNext = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-right\" viewBox=\"0 0 24 24\"><path d=\"m9 18 6-6-6-6\"/></svg>";
+
+    var pgnPrevious = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-chevron-left\" viewBox=\"0 0 24 24\"><path d=\"m15 18-6-6 6-6\"/></svg>";
+
+    var searchIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-search\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>";
+
+    var searchLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-search\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>";
+
+    var searchMedium = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-search\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg>";
+
+    var slidenavNextLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-right\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg>";
+
+    var slidenavNext = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-right\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg>";
+
+    var slidenavPreviousLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-left\" viewBox=\"0 0 24 24\"><path d=\"m12 19-7-7 7-7\"/><path d=\"M19 12H5\"/></svg>";
+
+    var slidenavPrevious = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-arrow-left\" viewBox=\"0 0 24 24\"><path d=\"m12 19-7-7 7-7\"/><path d=\"M19 12H5\"/></svg>";
+
+    var spinner = "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\"><circle fill=\"none\" stroke=\"#000\" cx=\"15\" cy=\"15\" r=\"14\"/></svg>";
+
+    var totop = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-circle-chevron-up\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m8 14 4-4 4 4\"/></svg>";
+
+    const icons = {
+      spinner,
+      totop,
+      marker,
+      "close-icon": closeIcon,
+      "close-large": closeLarge,
+      "drop-parent-icon": dropParentIcon,
+      "nav-parent-icon": navParentIcon,
+      "nav-parent-icon-large": navParentIconLarge,
+      "navbar-parent-icon": navbarParentIcon,
+      "navbar-toggle-icon": navbarToggleIcon,
+      "overlay-icon": overlayIcon,
+      "pgn-next": pgnNext,
+      "pgn-previous": pgnPrevious,
+      "search-icon": searchIcon,
+      "search-medium": searchMedium,
+      "search-large": searchLarge,
+      "search-toggle-icon": searchIcon,
+      "slidenav-next": slidenavNext,
+      "slidenav-next-large": slidenavNextLarge,
+      "slidenav-previous": slidenavPrevious,
+      "slidenav-previous-large": slidenavPreviousLarge
+    };
+    const Icon = {
+      install,
+      mixins: [Svg],
+      args: "icon",
+      props: { icon: String },
+      isIcon: true,
+      beforeConnect() {
+        addClass(this.$el, "uk-icon");
+      },
+      methods: {
+        async getSvg() {
+          const icon = getIcon(this.icon);
+          if (!icon) {
+            throw "Icon not found.";
+          }
+          return icon;
+        }
+      }
+    };
+    const IconComponent = {
+      args: false,
+      extends: Icon,
+      data: (vm) => ({
+        icon: hyphenate(vm.constructor.options.name)
+      }),
+      beforeConnect() {
+        addClass(this.$el, this.$options.id);
+      }
+    };
+    const NavParentIcon = {
+      extends: IconComponent,
+      beforeConnect() {
+        const icon = this.$props.icon;
+        this.icon = this.$el.closest(".uk-nav-primary") ? `${icon}-large` : icon;
+      }
+    };
+    const Search = {
+      extends: IconComponent,
+      mixins: [I18n],
+      i18n: { toggle: "Open Search", submit: "Submit Search" },
+      beforeConnect() {
+        const isToggle = hasClass(this.$el, "uk-search-toggle") || hasClass(this.$el, "uk-navbar-toggle");
+        this.icon = isToggle ? "search-toggle-icon" : hasClass(this.$el, "uk-search-icon") && this.$el.closest(".uk-search-large") ? "search-large" : this.$el.closest(".uk-search-medium") ? "search-medium" : this.$props.icon;
+        if (hasAttr(this.$el, "aria-label")) {
+          return;
+        }
+        if (isToggle) {
+          const label = this.t("toggle");
+          attr(this.$el, "aria-label", label);
+        } else {
+          const button = this.$el.closest("a,button");
+          if (button) {
+            const label = this.t("submit");
+            attr(button, "aria-label", label);
+          }
+        }
+      }
+    };
+    const Spinner = {
+      extends: IconComponent,
+      beforeConnect() {
+        attr(this.$el, "role", "status");
+      },
+      methods: {
+        async getSvg() {
+          const icon = await Icon.methods.getSvg.call(this);
+          if (this.ratio !== 1) {
+            css($("circle", icon), "strokeWidth", 1 / this.ratio);
+          }
+          return icon;
+        }
+      }
+    };
+    const ButtonComponent = {
+      extends: IconComponent,
+      mixins: [I18n],
+      beforeConnect() {
+        const button = this.$el.closest("a,button");
+        attr(button, "role", this.role !== null && isTag(button, "a") ? "button" : this.role);
+        const label = this.t("label");
+        if (label && !hasAttr(button, "aria-label")) {
+          attr(button, "aria-label", label);
+        }
+      }
+    };
+    const Slidenav = {
+      extends: ButtonComponent,
+      beforeConnect() {
+        addClass(this.$el, "uk-slidenav");
+        const icon = this.$props.icon;
+        this.icon = hasClass(this.$el, "uk-slidenav-large") ? `${icon}-large` : icon;
+      }
+    };
+    const NavbarToggleIcon = {
+      extends: ButtonComponent,
+      i18n: { label: "Open menu" }
+    };
+    const Close = {
+      extends: ButtonComponent,
+      i18n: { label: "Close" },
+      beforeConnect() {
+        this.icon = `close-${hasClass(this.$el, "uk-close-large") ? "large" : "icon"}`;
+      }
+    };
+    const Marker = {
+      extends: ButtonComponent,
+      i18n: { label: "Open" }
+    };
+    const Totop = {
+      extends: ButtonComponent,
+      i18n: { label: "Back to top" }
+    };
+    const PaginationNext = {
+      extends: ButtonComponent,
+      i18n: { label: "Next page" },
+      data: { role: null }
+    };
+    const PaginationPrevious = {
+      extends: ButtonComponent,
+      i18n: { label: "Previous page" },
+      data: { role: null }
+    };
+    const parsed = {};
+    function install(UIkit) {
+      UIkit.icon.add = (name, svg) => {
+        const added = isString(name) ? { [name]: svg } : name;
+        each(added, (svg2, name2) => {
+          icons[name2] = svg2;
+          delete parsed[name2];
+        });
+        if (UIkit._initialized) {
+          apply(
+            document.body,
+            (el) => each(UIkit.getComponents(el), (cmp) => {
+              cmp.$options.isIcon && cmp.icon in added && cmp.$reset();
+            })
+          );
+        }
+      };
+    }
+    const aliases = { twitter: "x" };
+    function getIcon(icon) {
+      icon = aliases[icon] || icon;
+      if (!icons[icon]) {
+        return null;
+      }
+      if (!parsed[icon]) {
+        parsed[icon] = stringToSvg(icons[applyRtl(icon)] || icons[icon]);
+      }
+      return parsed[icon].cloneNode(true);
+    }
+    function applyRtl(icon) {
+      return isRtl ? swap(swap(icon, "left", "right"), "previous", "next") : icon;
+    }
+
     var components = /*#__PURE__*/Object.freeze({
         __proto__: null,
         Accordion: Accordion,
@@ -9599,28 +9039,21 @@
         Drop: drop,
         DropParentIcon: IconComponent,
         Dropdown: drop,
-        Dropnav: Dropnav,
-        FormCustom: formCustom,
+        Dropnav: dropnav,
         Grid: grid,
-        HeightMatch: heightMatch,
-        HeightPlaceholder: heightPlaceholder,
-        HeightViewport: heightViewport,
-        Icon: Icon,
         Img: img,
         Leader: leader,
-        Margin: Margin,
         Marker: Marker,
         Modal: modal,
         Nav: nav,
         NavParentIcon: NavParentIcon,
-        Navbar: navbar,
         NavbarParentIcon: IconComponent,
         NavbarToggleIcon: NavbarToggleIcon,
         Offcanvas: offcanvas,
         OverflowAuto: overflowAuto,
         OverlayIcon: IconComponent,
-        PaginationNext: PaginationNext,
-        PaginationPrevious: PaginationPrevious,
+        PgnNext: PaginationNext,
+        PgnPrevious: PaginationPrevious,
         Responsive: responsive,
         Scroll: scroll,
         Scrollspy: scrollspy,

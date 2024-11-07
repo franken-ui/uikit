@@ -76,7 +76,7 @@ export default {
         clsDrop: false,
         animateOut: false,
         bgScroll: true,
-        animation: ['uk-animation-fade'],
+        animation: ['uk-anmt-fade'],
         cls: 'uk-open',
         container: false,
         closeOnScroll: false,
