@@ -1,5 +1,95 @@
 # Changelog
 
+## 3.22.2 (January 16, 2025)
+
+### Fixed
+
+- Fix missing list markers in Chrome in List component
+
+## 3.22.1 (January 16, 2025)
+
+### Changed
+
+- Apply accordion item hook also to the first item
+
+## 3.22.0 (January 9, 2025)
+
+### Added
+
+- Add `slidnav` option to disable slidenav to Lightbox component
+- Add `nav` option to show a vertical thumbnav or dotnav to Lightbox component
+- Add `counter` option to show counter with current item number and total number of items to Lightbox component
+- Add `video-autoplay: inline` option to autoplay video without controls and muted to Lightbox component
+- Add zoom behavior to images and inline videos if they are higher than the viewport to Lightbox component
+- Allow `template` option to reference a `template` element in the DOM for the lightbox layout in Lightbox component
+- Add hidden class to hide empty elements to Visibility component
+- Add inverse style for form rang to Form component
+- Add margin xsmall classes to Margin component
+- Add horizontal margin variable to subnav pill in Subnav component
+- Add text stroke class to Text component
+- Add close-circle and arrow-down-arrow-up icons
+- Add `reload` option to Countdown component
+- Add `offset-end` option to Sticky component
+
+### Changed
+
+- IMPORTANT: Remove `@lightbox-toolbar-icon-*` and `@lightbox-button-*`from Lightbox component
+- IMPORTANT: Rename `@lightbox-toolbar-*` to `@lightbox-caption-*` in Lightbox component
+- IMPORTANT: Rename `@lightbox-item-color` to `@lightbox-color` in Lightbox component
+- Set `delay-controls: 0` prevents hiding controls in Lightbox component
+- Update default lightbox template in Lightbox component
+- Change padding calculation of search box and search icon in Search component
+- Change search style medium and large to look the same as default in Search component
+
+### Fixed
+
+- Fix spaces in the markup affecting the horizontal divider margin in Breadcrumb component
+
+## 3.21.17 (January 7, 2025)
+
+### Fixed
+
+- Fix Navbar component not re-applying transparency after closing Drop component
+
+## 3.21.16 (November 22, 2024)
+
+### Fixed
+
+- Fix regression in Scroll component
+
+## 3.21.15 (November 22, 2024)
+
+### Fixed
+
+- Fix regression in SVG parsing
+
+## 3.21.14 (November 21, 2024)
+
+### Fixed
+
+- Fix child components in Dropdown components toggling transparency in Navbar component
+- Fix Navbar toggles Dropdown component when hovering with mouse on initial page load
+- Fix Scrollspy Nav component checks if targets exists before activating state
+- Fix Slideshow component list does not fill available space in Safari
+- Fix hidden class keep showing elements on hover if a link is clicked in Visibility component
+- Fix showing elements if an element has focus within in Transition component
+
+## 3.21.13 (September 26, 2024)
+
+### Fixed
+
+- Fix `scrollIntoView()` for elements with `scroll-behavior: smooth`
+- Fix Offcanvas in reveal mode unwraps itself
+
+## 3.21.12 (September 9, 2024)
+
+### Fixed
+
+- Fix Sticky component not using `position: sticky` if parent has `overflow: clip`
+- Fix Sticky component is now inactive if page can't be scrolled
+- Fix using comma separated selectors in filter controls in Filter component
+- Fix Video component does not autopause videos with autoplay set to false
+
 ## 3.21.11 (August 22, 2024)
 
 ### Fixed

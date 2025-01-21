@@ -41,6 +41,7 @@ export default {
         start: null,
         end: null,
         offset: String,
+        offsetEnd: String,
         overflowFlip: Boolean,
         animation: String,
         clsActive: String,
@@ -59,6 +60,7 @@ export default {
         start: false,
         end: false,
         offset: 0,
+        offsetEnd: 0,
         overflowFlip: false,
         animation: '',
         clsActive: 'uk-active',
@@ -154,6 +156,17 @@ export default {
                     return;
                 }
 
+                const dynamicViewport = getHeight(window);
+                const maxScrollHeight = Math.max(
+                    0,
+                    document.scrollingElement.scrollHeight - dynamicViewport,
+                );
+
+                if (!maxScrollHeight) {
+                    this.inactive = true;
+                    return;
+                }
+
                 const hide = this.isFixed && types.has('update');
                 if (hide) {
                     preventTransition(this.target);
@@ -170,11 +183,6 @@ export default {
                 }
 
                 const viewport = toPx('100vh', 'height');
-                const dynamicViewport = getHeight(window);
-                const maxScrollHeight = Math.max(
-                    0,
-                    document.scrollingElement.scrollHeight - viewport,
-                );
 
                 let position = this.position;
                 if (this.overflowFlip && height > viewport) {
@@ -182,12 +190,16 @@ export default {
                 }
 
                 const referenceElement = this.isFixed ? this.placeholder : this.$el;
-                let offset = toPx(this.offset, 'height', sticky ? this.$el : referenceElement);
+                let [offset, offsetEnd] = [this.offset, this.offsetEnd].map((value) =>
+                    toPx(value, 'height', sticky ? this.$el : referenceElement),
+                );
+
                 if (position === 'bottom' && (height < dynamicViewport || this.overflowFlip)) {
                     offset += dynamicViewport - height;
                 }
 
-                const overflow = this.overflowFlip ? 0 : Math.max(0, height + offset - viewport);
+                const elementBox = height + offset + offsetEnd;
+                const overflow = this.overflowFlip ? 0 : Math.max(0, elementBox - viewport);
                 const topOffset =
                     getOffset(referenceElement).top -
                     // offset possible `transform: translateY` animation 'uk-anmt-slide-top' while hiding
@@ -210,7 +222,6 @@ export default {
                           );
 
                 sticky =
-                    maxScrollHeight &&
                     !this.showOnUp &&
                     start + offset === topOffset &&
                     end ===
@@ -218,7 +229,7 @@ export default {
                             maxScrollHeight,
                             parseProp(true, this.$el, 0, true) - elHeight - offset + overflow,
                         ) &&
-                    css(getVisibleParent(this.$el), 'overflowY') === 'visible';
+                    css(getVisibleParent(this.$el), 'overflowY') !== 'hidden';
 
                 return {
                     start,

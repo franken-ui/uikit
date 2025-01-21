@@ -1,4 +1,5 @@
 import { $$, addClass, css, hasClass, offset, removeClass } from 'uikit-util';
+import { active } from './drop';
 import Dropnav from './dropnav';
 
 const clsNavbarTransparent = 'uk-navbar-transparent';
@@ -59,7 +60,7 @@ export default {
             async handler() {
                 await awaitMacroTask();
 
-                if (!this.getActive() && this._transparent) {
+                if (this._transparent && (!active || !this.dropContainer.contains(active.$el))) {
                     addClass(this.navbarContainer, clsNavbarTransparent);
                     this._transparent = null;
                 }
