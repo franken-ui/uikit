@@ -72,13 +72,13 @@ export default {
                         <div class="uk-position-top-right uk-position-sm uk-transition-fade" uk-inverse>
                             <button class="uk-lightbox-close uk-close-large" type="button" uk-close></button>
                         </div>
-                        <div class="uk-lightbox-slidenav uk-position-center-left uk-position-md uk-transition-fade" uk-inverse>
+                        <div class="uk-lightbox-slidenav uk-position-center-left uk-position-sm uk-transition-fade" uk-inverse>
                             <a href uk-slidenav-previous uk-lightbox-item="previous"></a>
                         </div>
-                        <div class="uk-lightbox-slidenav uk-position-center-right uk-position-md uk-transition-fade" uk-inverse>
+                        <div class="uk-lightbox-slidenav uk-position-center-right uk-position-sm uk-transition-fade" uk-inverse>
                             <a href uk-slidenav-next uk-lightbox-item="next"></a>
                         </div>
-                        <div class="uk-position-center-right uk-position-md uk-transition-fade" uk-inverse style="max-height: 90vh; overflow: auto;">
+                        <div class="uk-position-center-right uk-position-sm uk-transition-fade" uk-inverse style="max-height: 90vh; overflow: auto;">
                             <ul class="uk-lightbox-thumbnav uk-lightbox-thumbnav-vertical uk-thumbnav uk-thumbnav-vertical"></ul>
                             <ul class="uk-lightbox-dotnav uk-dotnav uk-dotnav-vertical"></ul>
                         </div>
