@@ -31,6 +31,7 @@ export { default as Video } from './video';
 
 // Icon components
 export {
+    Check,
     Close,
     IconComponent as DropParentIcon,
     Marker,

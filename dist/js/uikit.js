@@ -8995,6 +8995,8 @@
       }
     };
 
+    var check = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-check\" viewBox=\"0 0 24 24\"><path d=\"M20 6 9 17l-5-5\"/></svg>";
+
     var closeIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-x\" viewBox=\"0 0 24 24\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>";
 
     var closeLarge = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-x\" viewBox=\"0 0 24 24\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>";
@@ -9039,6 +9041,7 @@
       spinner,
       totop,
       marker,
+      check,
       "close-icon": closeIcon,
       "close-large": closeLarge,
       "drop-parent-icon": dropParentIcon,
@@ -9180,6 +9183,11 @@
       i18n: { label: "Previous page" },
       data: { role: null }
     };
+    const Check = {
+      extends: ButtonComponent,
+      i18n: { label: "Check" },
+      data: { role: null }
+    };
     const parsed = {};
     function install(UIkit) {
       UIkit.icon.add = (name, svg) => {
@@ -9217,6 +9225,7 @@
         __proto__: null,
         Accordion: Accordion,
         Alert: alert,
+        Check: Check,
         Close: Close,
         Cover: cover,
         Drop: drop,

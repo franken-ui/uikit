@@ -13,6 +13,7 @@ import {
     isTag,
     swap,
 } from 'uikit-util';
+import check from '../../images/components/check.svg';
 import closeIcon from '../../images/components/close-icon.svg';
 import closeLarge from '../../images/components/close-large.svg';
 import dropParentIcon from '../../images/components/drop-parent-icon.svg';
@@ -40,6 +41,7 @@ const icons = {
     spinner,
     totop,
     marker,
+    check: check,
     'close-icon': closeIcon,
     'close-large': closeLarge,
     'drop-parent-icon': dropParentIcon,
@@ -229,6 +231,12 @@ export const PaginationNext = {
 export const PaginationPrevious = {
     extends: ButtonComponent,
     i18n: { label: 'Previous page' },
+    data: { role: null },
+};
+
+export const Check = {
+    extends: ButtonComponent,
+    i18n: { label: 'Check' },
     data: { role: null },
 };
 
