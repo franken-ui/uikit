@@ -8995,6 +8995,8 @@
       }
     };
 
+    var calendarIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-calendar\" viewBox=\"0 0 24 24\"><path d=\"M8 2v4\"/><path d=\"M16 2v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/></svg>";
+
     var check = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-check\" viewBox=\"0 0 24 24\"><path d=\"M20 6 9 17l-5-5\"/></svg>";
 
     var closeIcon = "<svg width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" class=\"lucide lucide-x\" viewBox=\"0 0 24 24\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>";
@@ -9041,6 +9043,7 @@
       spinner,
       totop,
       marker,
+      "calendar-icon": calendarIcon,
       check,
       "close-icon": closeIcon,
       "close-large": closeLarge,
@@ -9183,6 +9186,11 @@
       i18n: { label: "Previous page" },
       data: { role: null }
     };
+    const Calendar = {
+      extends: ButtonComponent,
+      i18n: { label: "Calendar" },
+      data: { role: null }
+    };
     const Check = {
       extends: ButtonComponent,
       i18n: { label: "Check" },
@@ -9225,6 +9233,7 @@
         __proto__: null,
         Accordion: Accordion,
         Alert: alert,
+        CalendarIcon: Calendar,
         Check: Check,
         Close: Close,
         Cover: cover,

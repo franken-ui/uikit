@@ -31,6 +31,7 @@ export { default as Video } from './video';
 
 // Icon components
 export {
+    Calendar as CalendarIcon,
     Check,
     Close,
     IconComponent as DropParentIcon,

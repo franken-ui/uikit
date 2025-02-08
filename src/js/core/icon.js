@@ -13,6 +13,7 @@ import {
     isTag,
     swap,
 } from 'uikit-util';
+import calendarIcon from '../../images/components/calendar.svg';
 import check from '../../images/components/check.svg';
 import closeIcon from '../../images/components/close-icon.svg';
 import closeLarge from '../../images/components/close-large.svg';
@@ -41,6 +42,7 @@ const icons = {
     spinner,
     totop,
     marker,
+    'calendar-icon': calendarIcon,
     check: check,
     'close-icon': closeIcon,
     'close-large': closeLarge,
@@ -231,6 +233,12 @@ export const PaginationNext = {
 export const PaginationPrevious = {
     extends: ButtonComponent,
     i18n: { label: 'Previous page' },
+    data: { role: null },
+};
+
+export const Calendar = {
+    extends: ButtonComponent,
+    i18n: { label: 'Calendar' },
     data: { role: null },
 };
 
